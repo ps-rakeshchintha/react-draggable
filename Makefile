@@ -22,20 +22,20 @@ build-cjs: $(BIN)
 	$(BIN)/babel --out-dir ./build/cjs ./lib
 
 build-web: $(BIN)
-	$(BIN)/webpack --mode=production --display-modules
+	$(BIN)/webpack --mode=production
 
 # Allows usage of `make install`, `make link`
 install link:
 	@yarn $@
 
 test: $(BIN)
-	@NODE_ENV=test $(BIN)/karma start
+	@$(BIN)/karma start
 
 test-phantom: $(BIN)
-	@NODE_ENV=test $(BIN)/karma start karma-phantomjs.conf.js
+	@$(BIN)/karma start karma-phantomjs.conf.js
 
 dev: $(BIN) clean
-	env DRAGGABLE_DEBUG=1 $(BIN)/webpack-dev-server
+	env DRAGGABLE_DEBUG=1 $(BIN)/webpack serve --mode=development
 
 node_modules/.bin: install
 
@@ -54,13 +54,13 @@ define release
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
 endef
 
-release-patch: test 
+release-patch: test
 	@$(call release,patch)
 
-release-minor: test 
+release-minor: test
 	@$(call release,minor)
 
-release-major: test 
+release-major: test
 	@$(call release,major)
 
 publish: build
